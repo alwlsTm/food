@@ -1,3 +1,7 @@
 .FoodList {
   list-style: none;
 }
+
+.FoodListItem {
+  margin: 10px;
+}
