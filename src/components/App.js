@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import mockItems from '../mock.json';
 import FoodList from './FoodList';
+import { getFoods } from '../api';
 
 function App() {
   const [order, setOrder] = useState('createdAt');  //아이템 정렬 state
@@ -15,6 +16,15 @@ function App() {
     const nextItem = items.filter((item) => item.id !== id);  //아이템의 id를 이용해 필터링
     setItems(nextItem);
   }
+
+  const handleLoad = async (orderQuery) => {  //음식 아이템 로드
+    const { foods } = await getFoods(orderQuery);
+    setItems(foods);
+  };
+
+  useEffect(() => {
+    handleLoad(order);
+  }, [order]);
 
   return (
     <div>
