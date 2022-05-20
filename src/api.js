@@ -1,7 +1,7 @@
 //request 함수
 //실습 서버에서 정렬한 데이터 받아오기
-export async function getFoods(order = '') {
-  const query = `order=${order}`;
+export async function getFoods({ order = 'createAt', cursor = '', limit = 10 }) {
+  const query = `order=${order}&cursor=${cursor}&limit=${limit}`;
   const response = await fetch(
     `https://learn.codeit.kr/1999/foods?${query}`
   );
