@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import mockItems from '../mock.json';
 import FoodList from './FoodList';
 import { getFoods } from '../api';
 
 function App() {
-  const [order, setOrder] = useState('createdAt');  //아이템 정렬 state
-  const [items, setItems] = useState(mockItems);  //아이템 state
+  const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
+  const [items, setItems] = useState([]);      //아이템 state
   const [cursor, setCursor] = useState(null);  //cursor(페이지네이션)값을 저장할 state
+  const [isLoading, setIsLoading] = useState(false);  //로딩 state
+  const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -20,9 +21,20 @@ function App() {
   }
 
   const handleLoad = async (options) => {  //음식 아이템 로드
+    let result;
+    try {
+      setLoadingError(null);
+      setIsLoading(true);   //로딩중
+      result = await getFoods(options);
+    } catch (error) {
+      setLoadingError(error);
+    } finally {
+      setIsLoading(false);  //로딩 완료
+    }
+
     const { foods,
       paging: { nextCursor },
-    } = await getFoods(options);
+    } = result;
 
     //cursor(커서) 페이지네이션
     if (!options.cursor) {  //cursor 값이 없다면 == 더보기로 불러온 데이터가 없으면
@@ -51,7 +63,8 @@ function App() {
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
       <FoodList items={sortedItems} onDelete={handleDelete} />
-      {cursor && <button onClick={handleLoadMore}>더보기</button>}
+      {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
+      {loadingError?.message && <span>{loadingError.message}</span>}
     </div>
   );
 }
