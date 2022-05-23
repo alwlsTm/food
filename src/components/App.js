@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import FoodList from './FoodList';
 import { getFoods } from '../api';
+import FoodList from './FoodList';
+import FoodForm from './FoodForm';
 
 function App() {
   const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
-  const [items, setItems] = useState([]);      //아이템 state
-  const [cursor, setCursor] = useState(null);  //cursor(페이지네이션)값을 저장할 state
+  const [items, setItems] = useState([]);             //아이템 state
+  const [cursor, setCursor] = useState(null);         //cursor(페이지네이션)값을 저장할 state
   const [isLoading, setIsLoading] = useState(false);  //로딩 state
   const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
 
@@ -62,6 +63,7 @@ function App() {
     <div>
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
+      <FoodForm />
       <FoodList items={sortedItems} onDelete={handleDelete} />
       {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
       {loadingError?.message && <span>{loadingError.message}</span>}
