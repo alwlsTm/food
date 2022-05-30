@@ -46,12 +46,6 @@ function App() {
     setCursor(nextCursor);  //paging.nextCursor
   };
 
-  useEffect(() => {
-    handleLoad({
-      order,
-    });
-  }, [order]);
-
   const handleLoadMore = () => {  //더보기(다음 페이지 불러오기)
     handleLoad({
       order,
@@ -59,11 +53,22 @@ function App() {
     });
   };
 
+  const handleSubmitSuccess = (newItem) => {
+    setItems((prevItems) => [newItem, ...prevItems]);
+  }
+
+  useEffect(() => {
+    handleLoad({
+      order,
+    });
+  }, [order]);
+
+
   return (
     <div>
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
-      <FoodForm />
+      <FoodForm onSubmitSuccess={handleSubmitSuccess} />
       <FoodList items={sortedItems} onDelete={handleDelete} />
       {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
       {loadingError?.message && <span>{loadingError.message}</span>}
