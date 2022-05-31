@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-function FileInput({ name, value, onChange }) {  //file - 비제어 컴포넌트(value prop 사용X)
-  const [preview, setPreview] = useState(); //영화 이미지 미리모기 state
+function FileInput({ name, value, initialPreview, onChange }) {  //file - 비제어 컴포넌트(value prop 사용X)
+  const [preview, setPreview] = useState(initialPreview); //영화 이미지 미리모기 state
   const inputRef = useRef();  //ref 객체(실제 DOM 노드를 참조)
 
   const handleChange = (e) => {
@@ -24,10 +24,10 @@ function FileInput({ name, value, onChange }) {  //file - 비제어 컴포넌트
     setPreview(nextPreview);
 
     return () => { //정리
-      setPreview();
+      setPreview(initialPreview);
       URL.revokeObjectURL(nextPreview); //오브젝트 url 해제(메모리 할당 해제)
     }
-  }, [value]);
+  }, [value, initialPreview]);
 
   return (
     <div>

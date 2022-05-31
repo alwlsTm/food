@@ -11,8 +11,13 @@ const INITIAL_VALUES = {  //하나의 state로 관리
   imgFile: null,
 };
 
-function FoodForm({ onSubmitSuccess }) {
-  const [values, setValues] = useState(INITIAL_VALUES);
+function FoodForm({
+  initialValues = INITIAL_VALUES,
+  initialPreview,
+  onSubmitSuccess,
+  onCancel,
+}) {
+  const [values, setValues] = useState(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);      //submit 로딩 state
   const [submittingError, setSubmittingError] = useState(null); //submit 에러 state
 
@@ -55,10 +60,16 @@ function FoodForm({ onSubmitSuccess }) {
 
   return (
     <form className="FoodForm" onSubmit={handleSubmit}>
-      <FileInput name="imgFile" value={values.imgFile} onChange={handleChange} />
+      <FileInput
+        name="imgFile"
+        value={values.imgFile}
+        initialPreview={initialPreview}
+        onChange={handleChange}
+      />
       <input name="title" value={values.title} onChange={handleInputChange}></input>
       <input type="number" name="calorie" value={values.calorie} onChange={handleInputChange}></input>
       <input name="content" value={values.content} onChange={handleInputChange}></input>
+      {onCancel && <button onClick={onCancel}>취소</button>}
       <button type="submit" disabled={isSubmitting}>확인</button>
       {submittingError?.message && <div>{submittingError.message}</div>}
     </form>
