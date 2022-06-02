@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { createFood } from "../api";
 import FileInput from "./FileInput";
 import './FoodForm.css';
 
@@ -12,10 +11,11 @@ const INITIAL_VALUES = {  //하나의 state로 관리
 };
 
 function FoodForm({
-  initialValues = INITIAL_VALUES,
-  initialPreview,
-  onSubmitSuccess,
-  onCancel,
+  initialValues = INITIAL_VALUES, //각 input 초기값
+  initialPreview,   //이미지 미리보기 초기값
+  onSubmit,  //글 작성 & 수정
+  onSubmitSuccess,  //submit 성공 & 글 수정 성공
+  onCancel,  //수정중인 글 취소
 }) {
   const [values, setValues] = useState(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);      //submit 로딩 state
@@ -46,7 +46,7 @@ function FoodForm({
     try {
       setSubmittingError(null);
       setIsSubmitting(true);  //submit중..
-      result = await createFood(formData); //데이터 생성 리퀘스트
+      result = await onSubmit(formData); //데이터 생성 & 수정 리퀘스트
     } catch (error) {
       setSubmittingError(error);
       return;

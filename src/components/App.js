@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { getFoods } from '../api';
+import { createFood, getFoods, updateFood } from '../api';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
 
+//글 불러오기 & 작성 & 수정
 function App() {
-  const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
   const [items, setItems] = useState([]);             //아이템 state
+  const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
   const [cursor, setCursor] = useState(null);         //cursor(페이지네이션)값을 저장할 state
   const [isLoading, setIsLoading] = useState(false);  //로딩 state
   const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
@@ -53,9 +54,22 @@ function App() {
     });
   };
 
-  const handleSubmitSuccess = (newItem) => {
+  //새로 작성한 글을 받아서 items에 바로 적용
+  const handleCreateSuccess = (newItem) => {
     setItems((prevItems) => [newItem, ...prevItems]);
   }
+
+  //글 수정 후 리스폰스로 받은 데이터 반영
+  const handleUpdateSuccess = (newItem) => {
+    setItems((prevItems) => {
+      const splitIdx = prevItems.findIndex((item) => item.id === newItem.id);  //수정할 item index 찾기
+      return [
+        ...prevItems.splice(0, splitIdx),  //앞 요소
+        newItem, //수정한 리뷰
+        ...prevItems.splice(splitIdx + 1), //뒷 요소
+      ];
+    });
+  };
 
   useEffect(() => {
     handleLoad({
@@ -68,8 +82,13 @@ function App() {
     <div>
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
-      <FoodForm onSubmitSuccess={handleSubmitSuccess} />
-      <FoodList items={sortedItems} onDelete={handleDelete} />
+      <FoodForm onSubmit={createFood} onSubmitSuccess={handleCreateSuccess} />
+      <FoodList
+        items={sortedItems}
+        onDelete={handleDelete}
+        onUpdate={updateFood}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
       {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
       {loadingError?.message && <span>{loadingError.message}</span>}
     </div>

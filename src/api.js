@@ -17,6 +17,7 @@ export async function getFoods({ order = 'createAt', cursor = '', limit = 10 }) 
 }
 
 //POST
+//글 작성
 export async function createFood(formData) {
   const response = await fetch(
     `${BASE_URL}/foods`, {
@@ -26,6 +27,22 @@ export async function createFood(formData) {
   );
   if (!response.ok) { //에러가 발생할 경우
     throw new Error('데이터를 생성하는데 실패했습니다.');
+  }
+  const body = await response.json();
+  return body;
+}
+
+//PUT
+//글 수정
+export async function updateFood(id, formData) {  //id값을 이용해서 수정할 글을 서버에 알려줌
+  const response = await fetch(
+    `${BASE_URL}/foods/${id}`, {
+    method: 'PUT',
+    body: formData,
+  }
+  );
+  if (!response.ok) { //에러가 발생할 경우
+    throw new Error('데이터를 수정하는데 실패했습니다.');
   }
   const body = await response.json();
   return body;

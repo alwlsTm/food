@@ -21,7 +21,7 @@ function FoodListItem({ item, onDelete, onEdit }) {
 }
 
 //음식 리스트
-function FoodList({ items, onDelete }) {
+function FoodList({ items, onDelete, onUpdate, onUpdateSuccess }) {
   const [editingId, setEditingId] = useState(null); //수정 중인 글의 id state
 
   const handleCancel = () => setEditingId(null);  //글 수정의 취소
@@ -30,14 +30,24 @@ function FoodList({ items, onDelete }) {
     <ul className="FoodList">
       {items.map((item) => {
         if (item.id === editingId) {  //item.id 가 editingId일 경우 ReviewForm을 렌더링
-          const { imgUrl, title, rating, content } = item;
+          const { id, imgUrl, title, rating, content } = item;
           const initialValues = { title, rating, content };
+
+          const handleSubmit = (formData) => onUpdate(id, formData);  //글 수정 
+
+          const handleSubmitSuccess = (newItem) => { //글 수정 완료
+            onUpdateSuccess(newItem);
+            setEditingId(null); //입력폼 닫기
+          };
+
           return (
             <li key={item.id}>
               <FoodForm
-                initialValues={initialValues}
-                initialPreview={imgUrl}
-                onCancel={handleCancel}
+                initialValues={initialValues} //수정중인 글의 기본값
+                initialPreview={imgUrl} //수정중인 글의 이미지 미리보기
+                onSubmit={handleSubmit} //글 수정
+                onSubmitSuccess={handleSubmitSuccess} //글 수정 완료
+                onCancel={handleCancel} //글 수정 취소
               />
             </li>
           );
