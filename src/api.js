@@ -23,8 +23,7 @@ export async function createFood(formData) {
     `${BASE_URL}/foods`, {
     method: 'POST',
     body: formData,
-  }
-  );
+  });
   if (!response.ok) { //에러가 발생할 경우
     throw new Error('데이터를 생성하는데 실패했습니다.');
   }
@@ -39,10 +38,23 @@ export async function updateFood(id, formData) {  //id값을 이용해서 수정
     `${BASE_URL}/foods/${id}`, {
     method: 'PUT',
     body: formData,
-  }
-  );
+  });
   if (!response.ok) { //에러가 발생할 경우
     throw new Error('데이터를 수정하는데 실패했습니다.');
+  }
+  const body = await response.json();
+  return body;
+}
+
+//DELETE
+//글 삭제
+export async function deleteFood(id) {  //id값을 이용해서 삭제할 글을 서버에 알려줌
+  const response = await fetch(
+    `${BASE_URL}/foods/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('데이터를 삭제하는데 실패했습니다.');
   }
   const body = await response.json();
   return body;

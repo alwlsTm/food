@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createFood, getFoods, updateFood } from '../api';
+import { createFood, deleteFood, getFoods, updateFood } from '../api';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
 
@@ -17,9 +17,11 @@ function App() {
 
   const handleCalorieClick = () => setOrder('calorie');   //칼로리순
 
-  const handleDelete = (id) => {  //아이템 삭제
-    const nextItem = items.filter((item) => item.id !== id);  //아이템의 id를 이용해 필터링
-    setItems(nextItem);
+  const handleDelete = async (id) => {  //아이템 삭제
+    const result = await deleteFood(id);
+    if (!result) return;
+
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));  //아이템의 id를 이용해 필터링
   }
 
   const handleLoad = async (options) => {  //음식 아이템 로드
