@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createFood, deleteFood, getFoods, updateFood } from '../api';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
+import useAsync from '../hooks/useAsync';
 
 //글 불러오기 & 작성 & 수정
 function App() {
   const [items, setItems] = useState([]);             //아이템 state
   const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
   const [cursor, setCursor] = useState(null);         //cursor(페이지네이션)값을 저장할 state
-  const [isLoading, setIsLoading] = useState(false);  //로딩 state
-  const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
+  const [isLoading, loadingError, getFoodsAsync] = useAsync(getFoods); //로딩 에러 state
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -24,17 +24,9 @@ function App() {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));  //아이템의 id를 이용해 필터링
   }
 
-  const handleLoad = async (options) => {  //음식 아이템 로드
-    let result;
-    try {
-      setLoadingError(null);
-      setIsLoading(true);   //로딩중
-      result = await getFoods(options);
-    } catch (error) {
-      setLoadingError(error);
-    } finally {
-      setIsLoading(false);  //로딩 완료
-    }
+  const handleLoad = useCallback(async (options) => {  //음식 아이템 로드
+    const result = await getFoodsAsync(options);
+    if (!result) return;
 
     const { foods,
       paging: { nextCursor },
@@ -47,7 +39,7 @@ function App() {
       setItems((prevItems) => [...prevItems, ...foods]);  //이전 state의 값을 받아서 변경할 state 값을 리턴
     }
     setCursor(nextCursor);  //paging.nextCursor
-  };
+  }, [getFoodsAsync]); //함수를 고정시켜 재사용
 
   const handleLoadMore = () => {  //더보기(다음 페이지 불러오기)
     handleLoad({
@@ -77,7 +69,7 @@ function App() {
     handleLoad({
       order,
     });
-  }, [order]);
+  }, [order, handleLoad]);
 
 
   return (

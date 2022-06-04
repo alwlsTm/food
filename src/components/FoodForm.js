@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useAsync from "../hooks/useAsync";
 import FileInput from "./FileInput";
 import './FoodForm.css';
 
@@ -18,8 +19,7 @@ function FoodForm({
   onCancel,  //수정중인 글 취소
 }) {
   const [values, setValues] = useState(initialValues);
-  const [isSubmitting, setIsSubmitting] = useState(false);      //submit 로딩 state
-  const [submittingError, setSubmittingError] = useState(null); //submit 에러 state
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onsubmit);
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -42,17 +42,9 @@ function FoodForm({
     formData.append('content', values.content);
     formData.append('imgFile', values.imgFile);
 
-    let result;
-    try {
-      setSubmittingError(null);
-      setIsSubmitting(true);  //submit중..
-      result = await onSubmit(formData); //데이터 생성 & 수정 리퀘스트
-    } catch (error) {
-      setSubmittingError(error);
-      return;
-    } finally {
-      setIsSubmitting(false); //submit 완료!
-    }
+    const result = await onSubmitAsync(formData);
+    if (!result) return;
+
     const { food } = result;
     onSubmitSuccess(food);
     setValues(INITIAL_VALUES);  //리퀘스트가 끝나면 폼 초기화
