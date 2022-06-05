@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import LocaleContext from '../contexts/LocaleContext';
 import FoodForm from './FoodForm';
 import './FoodList.css';
 
 //음식 리스트 아이템
 function FoodListItem({ item, onDelete, onEdit }) {
+  const locale = useContext(LocaleContext); //context 값 가져오기
+
   const handleDeleteClick = () => onDelete(item.id);
 
   const handleEditClick = () => onEdit(item.id);
@@ -14,6 +17,7 @@ function FoodListItem({ item, onDelete, onEdit }) {
       <p>{item.title}</p>
       <p>{item.calorie}</p>
       <p>{item.content}</p>
+      <p>현재 언어: {locale}</p>
       <button onClick={handleDeleteClick}>삭제</button>
       <button onClick={handleEditClick}>수정</button>
     </div>
