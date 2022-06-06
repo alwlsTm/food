@@ -3,7 +3,7 @@ import { createFood, deleteFood, getFoods, updateFood } from '../api';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
 import useAsync from '../hooks/useAsync';
-import LocaleContext from '../contexts/LocaleContext';
+import { LocaleProvider } from '../contexts/LocaleContext';
 import LocaleSelect from './LocaleSelect';
 
 //글 불러오기 & 작성 & 수정
@@ -12,7 +12,6 @@ function App() {
   const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
   const [cursor, setCursor] = useState(null);         //cursor(페이지네이션)값을 저장할 state
   const [isLoading, loadingError, getFoodsAsync] = useAsync(getFoods);
-  const [locale, setLocale] = useState('ko');          //locale state
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -76,9 +75,9 @@ function App() {
 
 
   return (
-    <LocaleContext.Provider value={locale}>
+    <LocaleProvider defaultValue={'ko'}>
       <div>
-        <LocaleSelect value={locale} onChange={setLocale} />
+        <LocaleSelect />
         <div>
           <button onClick={handleNewestClick}>최신순</button>
           <button onClick={handleCalorieClick}>칼로리순</button>
@@ -93,7 +92,7 @@ function App() {
         {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
         {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
-    </LocaleContext.Provider>
+    </LocaleProvider>
   );
 }
 
