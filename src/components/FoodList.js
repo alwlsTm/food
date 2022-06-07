@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useLocale } from '../contexts/LocaleContext';
+import useTranslate from '../hooks/useTranslate';
 import FoodForm from './FoodForm';
 import './FoodList.css';
 
 //음식 리스트 아이템
 function FoodListItem({ item, onDelete, onEdit }) {
-  const locale = useLocale(); //context 값 가져오기
+  const t = useTranslate(); //다국어 번역 함수(커스텀 훅) 가져오기
 
   const handleDeleteClick = () => onDelete(item.id);
 
@@ -17,9 +17,8 @@ function FoodListItem({ item, onDelete, onEdit }) {
       <p>{item.title}</p>
       <p>{item.calorie}</p>
       <p>{item.content}</p>
-      <p>현재 언어: {locale}</p>
-      <button onClick={handleDeleteClick}>삭제</button>
-      <button onClick={handleEditClick}>수정</button>
+      <button onClick={handleEditClick}>{t('edit button')}</button>
+      <button onClick={handleDeleteClick}>{t('delete button')}</button>
     </div>
   );
 }

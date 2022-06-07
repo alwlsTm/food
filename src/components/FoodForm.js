@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useAsync from "../hooks/useAsync";
+import useTranslate from "../hooks/useTranslate";
 import FileInput from "./FileInput";
 import './FoodForm.css';
 
@@ -20,6 +21,7 @@ function FoodForm({
 }) {
   const [values, setValues] = useState(initialValues);
   const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onsubmit);
+  const t = useTranslate(); //다국어 번역 함수(커스텀 훅) 가져오기
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -61,8 +63,8 @@ function FoodForm({
       <input name="title" value={values.title} onChange={handleInputChange}></input>
       <input type="number" name="calorie" value={values.calorie} onChange={handleInputChange}></input>
       <input name="content" value={values.content} onChange={handleInputChange}></input>
-      {onCancel && <button onClick={onCancel}>취소</button>}
-      <button type="submit" disabled={isSubmitting}>확인</button>
+      {onCancel && <button onClick={onCancel}>{t('cancel button')}</button>}
+      <button type="submit" disabled={isSubmitting}>{t('confirm button')}</button>
       {submittingError?.message && <div>{submittingError.message}</div>}
     </form>
   );
