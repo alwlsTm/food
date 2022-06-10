@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createFood, deleteFood, getFoods, updateFood } from '../api';
-import { LocaleProvider } from '../contexts/LocaleContext';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
 import useAsync from '../hooks/useAsync';
 import LocaleSelect from './LocaleSelect';
+import useTranslate from '../hooks/useTranslate';
 
 //글 불러오기 & 작성 & 수정
 function App() {
@@ -13,6 +13,7 @@ function App() {
   const [cursor, setCursor] = useState(null);       //cursor(페이지네이션)값을 저장할 state
   const [search, setSearch] = useState('');       //검색 state
   const [isLoading, loadingError, getFoodsAsync] = useAsync(getFoods);
+  const t = useTranslate();
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -83,28 +84,26 @@ function App() {
 
 
   return (
-    <LocaleProvider defaultValue={'ko'}>
+    <div>
+      <LocaleSelect />
       <div>
-        <LocaleSelect />
-        <div>
-          <button onClick={handleNewestClick}>최신순</button>
-          <button onClick={handleCalorieClick}>칼로리순</button>
-        </div>
-        <form onSubmit={handleSearchSubmit}>
-          <input name="search"></input>
-          <button type="submit">검색</button>
-        </form>
-        <FoodForm onSubmit={createFood} onSubmitSuccess={handleCreateSuccess} />
-        <FoodList
-          items={sortedItems}
-          onDelete={handleDelete}
-          onUpdate={updateFood}
-          onUpdateSuccess={handleUpdateSuccess}
-        />
-        {cursor && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
-        {loadingError?.message && <span>{loadingError.message}</span>}
+        <button onClick={handleNewestClick}>{t('newest')}</button>
+        <button onClick={handleCalorieClick}>{t('sort by calorie')}</button>
       </div>
-    </LocaleProvider>
+      <form onSubmit={handleSearchSubmit}>
+        <input name="search"></input>
+        <button type="submit">{t('search')}</button>
+      </form>
+      <FoodForm onSubmit={createFood} onSubmitSuccess={handleCreateSuccess} />
+      <FoodList
+        items={sortedItems}
+        onDelete={handleDelete}
+        onUpdate={updateFood}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
+      {cursor && <button disabled={isLoading} onClick={handleLoadMore}>{t('load more')}</button>}
+      {loadingError?.message && <span>{loadingError.message}</span>}
+    </div>
   );
 }
 

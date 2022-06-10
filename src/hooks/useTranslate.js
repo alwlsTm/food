@@ -6,12 +6,20 @@ const dict = {  //사전으로 사용할 객체
     'cancel button': '취소',
     'edit button': '수정',
     'delete button': '삭제',
+    'newest': '최신순',
+    'sort by calorie': '칼로리순',
+    'search': '검색',
+    'load more': '더보기',
   },
   en: {
     'confirm button': 'OK',
     'cancel button': 'Cancel',
     'edit button': 'Edit',
     'delete button': 'Delete',
+    'newest': 'Newest',
+    'sort by calorie': 'By Calorie',
+    'search': 'Search',
+    'load more': 'Load More',
   },
 };
 
