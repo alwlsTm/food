@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import './FileInput.css';
+import placeholderImg from '../IMGS/preview-placeholder.png'
+import resetImg from '../IMGS/ic-reset-white.png'
 
 function FileInput({ name, value, initialPreview, onChange }) {  //file - 비제어 컴포넌트(value prop 사용X)
   const [preview, setPreview] = useState(initialPreview); //음식 이미지 미리모기 state
@@ -30,10 +33,27 @@ function FileInput({ name, value, initialPreview, onChange }) {  //file - 비제
   }, [value, initialPreview]);
 
   return (
-    <div>
-      <img src={preview} alt="이미지 미리보기"></img>
-      <input type="file" accept="image/png, image/jpeg" onChange={handleChange} ref={inputRef}></input>
-      {value && <button onClick={handleClearClick}>X</button>}
+    <div className="FileInput">
+      <img
+        className={`FileInput-preview ${preview ? 'preview' : ''}`}
+        src={preview || placeholderImg}
+        alt="이미지 미리보기"
+      ></img>
+      <input
+        className="FileInput-hidden-overlay"
+        type="file"
+        accept="image/png, image/jpeg"
+        onChange={handleChange}
+        ref={inputRef}
+      ></input>
+      {value && (
+        <button
+          className="FileInput-clear-button"
+          onClick={handleClearClick}
+        >
+          <img src={resetImg} alt="지우기"></img>
+        </button>
+      )}
     </div>
   );
 }

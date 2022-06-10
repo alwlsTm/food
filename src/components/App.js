@@ -5,6 +5,22 @@ import FoodForm from './FoodForm';
 import useAsync from '../hooks/useAsync';
 import LocaleSelect from './LocaleSelect';
 import useTranslate from '../hooks/useTranslate';
+import './App.css';
+import backgroundImg from '../IMGS/background.png'
+import logoImg from '../IMGS/logo.png';
+import searchImg from '../IMGS/ic-search.png';
+
+function AppSortButton({ selected, children, onClick }) {
+  return (
+    <button
+      disabled={selected}
+      className={`AppSortButton ${selected ? 'selected' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
 
 //글 불러오기 & 작성 & 수정
 function App() {
@@ -84,25 +100,51 @@ function App() {
 
 
   return (
-    <div>
-      <LocaleSelect />
-      <div>
-        <button onClick={handleNewestClick}>{t('newest')}</button>
-        <button onClick={handleCalorieClick}>{t('sort by calorie')}</button>
+    <div className="App" style={{ backgroundImage: `url("${backgroundImg}")` }}>
+      <nav className="App-nav">
+        <img src={logoImg} alt="Foodit"></img>
+      </nav>
+      <div className="App-container">
+        <div className="App-FoodForm">
+          <FoodForm
+            onSubmit={createFood}
+            onSubmitSuccess={handleCreateSuccess}
+          />
+        </div>
+        <div className="App-filter">
+          <form className="App-search" onSubmit={handleSearchSubmit}>
+            <input className="App-search-input" name="search"></input>
+            <button className="App-search-button" type="submit">
+              <img src={searchImg} alt="검색"></img>
+            </button>
+          </form>
+          <div className="App-orders">
+            <AppSortButton
+              selected={order === 'createdAt'}
+              onClick={handleNewestClick}
+            >
+              {t('newest')}
+            </AppSortButton>
+            <AppSortButton
+              selected={order === 'calorie'}
+              onClick={handleCalorieClick}
+            >
+              {t('sort by calorie')}
+            </AppSortButton>
+          </div>
+        </div>
+        <FoodList
+          items={sortedItems}
+          onDelete={handleDelete}
+          onUpdate={updateFood}
+          onUpdateSuccess={handleUpdateSuccess}
+        />
+        {cursor && <button disabled={isLoading} onClick={handleLoadMore}>{t('load more')}</button>}
+        {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
-      <form onSubmit={handleSearchSubmit}>
-        <input name="search"></input>
-        <button type="submit">{t('search')}</button>
-      </form>
-      <FoodForm onSubmit={createFood} onSubmitSuccess={handleCreateSuccess} />
-      <FoodList
-        items={sortedItems}
-        onDelete={handleDelete}
-        onUpdate={updateFood}
-        onUpdateSuccess={handleUpdateSuccess}
-      />
-      {cursor && <button disabled={isLoading} onClick={handleLoadMore}>{t('load more')}</button>}
-      {loadingError?.message && <span>{loadingError.message}</span>}
+      <footer>
+        <LocaleSelect />
+      </footer>
     </div>
   );
 }
