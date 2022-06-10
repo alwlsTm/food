@@ -4,8 +4,13 @@ const BASE_URL = `https://learn.codeit.kr/1999`;  //공통 url
 
 //GET
 //실습 서버에서 정렬한 데이터 받아오기
-export async function getFoods({ order = 'createAt', cursor = '', limit = 10 }) {
-  const query = `order=${order}&cursor=${cursor}&limit=${limit}`;
+export async function getFoods({
+  order = 'createAt',
+  cursor = '',
+  limit = 10,
+  search = '',
+}) {
+  const query = `order=${order}&cursor=${cursor}&limit=${limit}&search=${search}`;
   const response = await fetch(
     `${BASE_URL}/foods?${query}`
   );

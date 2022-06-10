@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createFood, deleteFood, getFoods, updateFood } from '../api';
+import { LocaleProvider } from '../contexts/LocaleContext';
 import FoodList from './FoodList';
 import FoodForm from './FoodForm';
 import useAsync from '../hooks/useAsync';
-import { LocaleProvider } from '../contexts/LocaleContext';
 import LocaleSelect from './LocaleSelect';
 
 //글 불러오기 & 작성 & 수정
 function App() {
-  const [items, setItems] = useState([]);             //아이템 state
-  const [order, setOrder] = useState('createdAt');    //아이템 정렬 state
-  const [cursor, setCursor] = useState(null);         //cursor(페이지네이션)값을 저장할 state
+  const [items, setItems] = useState([]);           //아이템 state
+  const [order, setOrder] = useState('createdAt');  //아이템 정렬 state
+  const [cursor, setCursor] = useState(null);       //cursor(페이지네이션)값을 저장할 state
+  const [search, setSearch] = useState('');       //검색 state
   const [isLoading, loadingError, getFoodsAsync] = useAsync(getFoods);
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
@@ -47,7 +48,13 @@ function App() {
     handleLoad({
       order,
       cursor,
+      search,
     });
+  };
+
+  const handleSearchSubmit = (e) => {  //검색
+    e.preventDefault();
+    setSearch(e.target['search'].value);  //input의 입력값
   };
 
   //새로 작성한 글을 받아서 items에 바로 적용
@@ -70,8 +77,9 @@ function App() {
   useEffect(() => {
     handleLoad({
       order,
+      search,
     });
-  }, [order, handleLoad]);
+  }, [order, search, handleLoad]);
 
 
   return (
@@ -82,6 +90,10 @@ function App() {
           <button onClick={handleNewestClick}>최신순</button>
           <button onClick={handleCalorieClick}>칼로리순</button>
         </div>
+        <form onSubmit={handleSearchSubmit}>
+          <input name="search"></input>
+          <button type="submit">검색</button>
+        </form>
         <FoodForm onSubmit={createFood} onSubmitSuccess={handleCreateSuccess} />
         <FoodList
           items={sortedItems}
