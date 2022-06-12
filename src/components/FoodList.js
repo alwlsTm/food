@@ -2,23 +2,47 @@ import { useState } from 'react';
 import useTranslate from '../hooks/useTranslate';
 import FoodForm from './FoodForm';
 import './FoodList.css';
+import placeholderImg from '../IMGS/preview-placeholder.png'
 
 //음식 리스트 아이템
 function FoodListItem({ item, onDelete, onEdit }) {
   const t = useTranslate(); //다국어 번역 함수(커스텀 훅) 가져오기
 
-  const handleDeleteClick = () => onDelete(item.id);
+  const handleDeleteClick = () => onDelete(item.id);  //삭제
 
-  const handleEditClick = () => onEdit(item.id);
+  const handleEditClick = () => onEdit(item.id);  //수정
 
   return (
     <div className='FoodListItem'>
-      <img src={item.imgUrl} alt={item.title}></img>
-      <p>{item.title}</p>
-      <p>{item.calorie}</p>
-      <p>{item.content}</p>
-      <button onClick={handleEditClick}>{t('edit button')}</button>
-      <button onClick={handleDeleteClick}>{t('delete button')}</button>
+      <img
+        className="FoodListItem-preview"
+        src={item.imgUrl || placeholderImg}
+        alt={item.title}
+      ></img>
+      <div className="FoodListItem-rows">
+        <div className="FoodListItem-title-calorie">
+          <h1 className="FoodListItem-title">{item.title}</h1>
+          <span className="FoodListItem-calorie">{item.calorie}kcal</span>
+        </div>
+
+        <p className="FoodListItem-content">{item.content}</p>
+        <div className="FoodListItem-date-buttons">
+          <div className="FoodListItem-buttons">
+            <button
+              className="FoodListItem-edit-button"
+              onClick={handleEditClick}
+            >
+              {t('edit button')}
+            </button>
+            <button
+              className="FoodListItem-delete-button"
+              onClick={handleDeleteClick}
+            >
+              {t('delete button')}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

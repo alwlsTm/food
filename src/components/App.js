@@ -9,6 +9,7 @@ import './App.css';
 import backgroundImg from '../IMGS/background.png'
 import logoImg from '../IMGS/logo.png';
 import searchImg from '../IMGS/ic-search.png';
+import logoTextImg from '../IMGS/logo-text.png';
 
 function AppSortButton({ selected, children, onClick }) {
   return (
@@ -134,16 +135,31 @@ function App() {
           </div>
         </div>
         <FoodList
+          className="App-FoodList"
           items={sortedItems}
           onDelete={handleDelete}
           onUpdate={updateFood}
           onUpdateSuccess={handleUpdateSuccess}
         />
-        {cursor && <button disabled={isLoading} onClick={handleLoadMore}>{t('load more')}</button>}
+        {cursor && (
+          <button
+            className="App-load-more-button"
+            disabled={isLoading}
+            onClick={handleLoadMore}
+          >
+            {t('load more')}
+          </button>
+        )}
         {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
-      <footer>
-        <LocaleSelect />
+      <footer className="App-footer">
+        <div className="App-footer-container">
+          <img src={logoTextImg} alt="Foodit"></img>
+          <LocaleSelect />
+          <div className="App-footer-menu">
+            {t('terms of service')} | {t('privacy policy')}
+          </div>
+        </div>
       </footer>
     </div>
   );

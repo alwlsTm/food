@@ -118,3 +118,37 @@ body {
   top: 16px;
   left: 0px;
 }
+
+.App .App-FoodList:not(:last-child) {
+  margin-bottom: 30px;
+}
+
+.App-load-more-button {
+  width: 100%;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: #f2f6f2;
+  font-size: 18px;
+  letter-spacing: -0.32px;
+  color: #4caf50;
+  border: none;
+  cursor: pointer;
+}
+
+.App-footer {
+  margin-top: 250px;
+  background-color: #4caf50;
+}
+
+.App-footer-container {
+  display: flex;
+  align-items: center;
+  padding: 28px 0 30px;
+}
+
+.App-footer-menu {
+  margin-left: auto;
+  font-size: 14px;
+  letter-spacing: -0.25px;
+  color: #d4fdd6;
+}
